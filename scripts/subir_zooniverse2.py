@@ -17,11 +17,15 @@ from panoptes_client import SubjectSet, Subject, Project, Panoptes
 #	print('ERROR: No se ha podido leer el fichero de configuracion.')
 #	sys.exit(1)
 	
-manifest_images_file = "/home/raul/all_sky_raul/datos/images_manifest.csv"
+manifest_images_file = "/home/raul/allsky_raul/datos/images_manifest.csv"
 
 image_set_name = 'Frames_prueba'
 
-Panoptes.connect(username=sys.argv[1], password=sys.argv[2])
+try:
+	Panoptes.connect(username='', password='')
+except:
+	print('NO conecta')
+	sys.exit(1)
 
 project = Project('19814')
 
@@ -40,7 +44,7 @@ with open(manifest_images_file, 'r') as mani_file:
 		subject = Subject()
 		subject.links.project = project
 		
-		df = pd.read_csv("/home/raul/all_sky_raul/datos/images_manifest.csv")
+		df = pd.read_csv("/home/raul/allsky_raul/datos/images_manifest.csv")
 		
 		for i in range(len(df.axes[1]) - 1):
 			subject.add_location(line['image_' + str(i)])
