@@ -1,3 +1,5 @@
+# Convierte las imagenes en un dataframe para subirlo a zoon
+
 import csv
 import os
 import pandas as pd

@@ -1,3 +1,5 @@
+# Sube el csv que se crea en subir_zooniverse1.py a zoon
+
 import csv
 import sys
 import os
