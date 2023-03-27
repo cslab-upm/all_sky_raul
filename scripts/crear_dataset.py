@@ -40,7 +40,15 @@ def buscar_objeto (frase):
   for i in range (j+8, l-1):
     out = out +  frase[i]
   return out
-  
+
+def buscar_retired (frase):
+  out = ''
+  j = frase.find('retired')
+  l = frase.find(',', j)
+  for i in range (j + 9, l):
+    out = out +  frase[i]
+  return out
+
 def buscar_fecha (frase):
   out = ''
   j = frase.find('20')
@@ -51,7 +59,7 @@ def buscar_fecha (frase):
       out = ''
   return out
   
-colum = ['Fichero', 'Identificador', 'Fecha', 'Objeto', 'Trayectoria_1', 'Trayectoria_2', 'Grosor_1', 'Grosor_2']
+colum = ['Fichero', 'Identificador', 'Fecha', 'Objeto', 'Trayectoria_1', 'Trayectoria_2', 'Grosor_1', 'Grosor_2', 'Retirada']
 csv = pd.DataFrame(columns = colum)
 dic = {}
 warnings.simplefilter("ignore")
@@ -80,6 +88,7 @@ for i in range(10, len(data)): # Empieza en 10 para eliminar las primeras que fu
     fila.append('')
     fila.append('')
     fila.append('')
+  fila.append(buscar_retired(data['metadata'].iloc[i]))
   for l in range(len(colum)):
     dic[colum[l]] = fila[l]
   csv = csv.append(dic, ignore_index = True)
@@ -87,28 +96,13 @@ warnings.simplefilter("default")
 
 def media_puntos(datos):
   x, y = [], []
-  x_aux = 0
   for i in range (len(datos)):
     try:
       float(datos.iloc[i][0])
       if math.isnan(datos.iloc[i][0]):
         continue
-      else:
-        x_aux = datos.iloc[i][0]
-        break
-    except:
-      continue
-  for i in range (len(datos)):
-    try:
-      float(datos.iloc[i][0])
-      if math.isnan(datos.iloc[i][0]):
-        continue
-      if x_aux -10 <= datos.iloc[i][0] <= x_aux + 10:
-        x.append(datos.iloc[i][0])
-        y.append(datos.iloc[i][1])
-      else:
-        x.append(datos.iloc[i][1])
-        y.append(datos.iloc[i][0])
+      x.append(datos.iloc[i][0])
+      y.append(datos.iloc[i][1])
     except:
       continue
   if len(x) == 0:
@@ -141,6 +135,20 @@ for i in csv['Identificador'].unique():
     dic[colum[l]] = fila[l]
   dataset = dataset.append(dic, ignore_index = True)
 warnings.simplefilter("default")
+
+path_candidatos = '/Escritorio/carpeta_comp/candidatos/'
+path_meteoros = '/Escritorio/careta_comp/meteoros/'
+path_otros = '/Escritorio/carpeta_comp/otros/'
+
+candidatos =  os.listdir(path_candidatos)
+for i in dataset['Fichero'].unique():
+  if dataset[dataset.Fichero == i]['Retirada'].iloc[0]:
+    if i in candidatos:
+      print(i)
+      if dataset[dataset.Fichero == i]['Objeto'].iloc[0] == 'Meteoro':
+        os.system('mv ' + path_candidatos + i + ' ' + path_meteoros)
+      else:
+        os.system('mv ' + path_candidatos + i + ' ' + path_otros)
 
 dataset.to_csv('datos2.csv')
 
