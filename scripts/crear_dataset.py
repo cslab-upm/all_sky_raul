@@ -109,6 +109,13 @@ def media_puntos(datos):
     return [0,0]
   else:
     return [sum(x)/len(x),sum(y)/len(y)]
+
+def contar_true(datos):
+  x = 0
+  for i in datos:
+    if i == 'true':
+      x += 1
+  return x > 3
     
 dataset = pd.DataFrame(columns = colum)
 dic = {}
@@ -131,6 +138,7 @@ for i in csv['Identificador'].unique():
     fila.append('')
     fila.append('')
     fila.append('')
+  fila.append(contar_true(aux['Retirada']))
   for l in range(len(colum)):
     dic[colum[l]] = fila[l]
   dataset = dataset.append(dic, ignore_index = True)
