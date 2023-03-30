@@ -119,7 +119,7 @@ def contar_true(datos):
   for i in datos:
     if i == 'true':
       x += 1
-  return x > 3
+  return x > 3 or datos.iloc[-1] == 'true'
     
 dataset = pd.DataFrame(columns = colum)
 dic = {}
