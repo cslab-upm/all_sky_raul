@@ -20,7 +20,11 @@ for j in carp:
 		img_array = []
 		imagenes = os.listdir(path + j + '/' + i)
 		imagenes.sort()
+		x = 0
 		for imagen in imagenes:
+			x += 1
+			if x%2 == 0:
+				continue
 			img = cv2.imread(path + j + '/' + i + '/' + imagen)
 			cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 			img_array.append(img)
@@ -33,5 +37,3 @@ for j in carp:
 		gif = VideoFileClip(nuevo_path_gifs + nombre)
 		gif.write_gif(nuevo_path_gifs + '/G' + i + '.gif')
 		os.system('rm ' + nuevo_path_gifs + nombre)
-		break
-	break
