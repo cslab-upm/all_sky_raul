@@ -5,7 +5,7 @@ import configparser
 import pandas as pd
 from panoptes_client import SubjectSet, Subject, Project, Panoptes
 
-path = '../Escritorio/carpeta_comp/gifs_dataset/'
+path = '../Escritorio/carpeta_comp/gifs_dataset2/'
 carpetas = os.listdir(path)
 
 Panoptes.connect(username='CSLab-UPM', password='Ph03n1x;')
