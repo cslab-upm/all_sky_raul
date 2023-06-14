@@ -1,3 +1,4 @@
+# Este es el script bueno
 import csv
 import sys
 import os
@@ -5,13 +6,13 @@ import configparser
 import pandas as pd
 from panoptes_client import SubjectSet, Subject, Project, Panoptes
 
-path = '../Escritorio/carpeta_comp/gifs_dataset2/'
+path = '../Escritorio/carpeta_comp/gifs_dataset2/1/'
 carpetas = os.listdir(path)
 
 Panoptes.connect(username='CSLab-UPM', password='Ph03n1x;')
 
 project = Project('19814')
-image_set_name = 'Videos_Definitivos'
+image_set_name = 'Videos_2016_1'
 
 try:
 	subject_set = SubjectSet.where(project_id=project.id, display_name=image_set_name).next()

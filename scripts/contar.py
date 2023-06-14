@@ -1,6 +1,6 @@
 import os
 
-path = '../Escritorio/carpeta_comp/gifs_dataset/'
+path = '../Escritorio/carpeta_comp/gifs_dataset2/1/'
 
 carpeta = os.listdir(path)
 

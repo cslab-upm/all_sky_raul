@@ -8,7 +8,7 @@ import warnings
 
 os.system('panoptes project download 19814 datos1.csv') # Es necesario panoptes config
 
-path_candidatos = '../../Escritorio/carpeta_comp/candidatos/'
+path_candidatos = '../../Escritorio/carpeta_comp/gifs_dataset2/videos_2016_1/'
 path_meteoros = '../../Escritorio/careta_comp/meteoros/'
 path_otros = '../../Escritorio/carpeta_comp/otros/'
 
@@ -63,17 +63,18 @@ def buscar_fecha (frase):
       out = ''
   return out
   
-colum = ['Fichero', 'Identificador', 'Fecha', 'Objeto', 'Trayectoria_1', 'Trayectoria_2', 'Grosor_1', 'Grosor_2', 'Retirada']
+colum = ['Fichero', 'Identificador', 'Fecha', 'Fecha_Clasificacion', 'Objeto', 'Trayectoria_1', 'Trayectoria_2', 'Grosor_1', 'Grosor_2', 'Retirada']
 csv = pd.DataFrame(columns = colum)
 dic = {}
 warnings.simplefilter("ignore")
-for i in range(10, len(data)): # Empieza en 10 para eliminar las primeras que fueron de pruebas
+for i in range(696, len(data)): # Empieza en 10 para eliminar las primeras que fueron de pruebas
   fila = []
   fila.append(buscar_filename(data['subject_data'].iloc[i]))
   fila.append(data['subject_ids'].iloc[i])
   fila.append(buscar_fecha(fila[0]))
+  fila.append(int(data['created_at'].iloc[i][:4] + data['created_at'].iloc[i][5:7] + data['created_at'].iloc[i][8:10]))
   frase = data['annotations'].iloc[i]
-  if re.search('Si', frase) or re.search('Sí', frase):
+  if re.search('Yes', frase):
     fila.append('Meteoro')
     fila.append([float(buscar_coordenadas(frase, 'x1', 1)), float(buscar_coordenadas(frase, 'y1', 1))])
     fila.append([float(buscar_coordenadas(frase, 'x2', 1)), float(buscar_coordenadas(frase, 'y2', 1))])
@@ -130,6 +131,7 @@ for i in csv['Identificador'].unique():
   fila.append(aux['Fichero'].iloc[0])
   fila.append(i)
   fila.append(aux['Fecha'].iloc[0])
+  fila.append(aux['Fecha_Clasificacion'].iloc[-1])
   obj = aux['Objeto'].value_counts().index[0]
   fila.append(obj)
   if obj == 'Meteoro':
