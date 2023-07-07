@@ -15,6 +15,8 @@ path_otros = '../../Escritorio/carpeta_comp/otros/'
 data = pd.DataFrame()
 data = pd.read_csv('datos1.csv')
 
+reg = pd.read_csv('registro.csv')
+
 def buscar_filename (frase):
   out = ''
   j = frase.find('Filename')
@@ -23,13 +25,13 @@ def buscar_filename (frase):
     out = out +  frase[i]
   return out
   
-def buscar_retired (frase):
-  out = ''
-  j = frase.find('retired')
-  l = frase.find(',', j)
-  for i in range (j + 9, l):
-    out = out +  frase[i]
-  return out
+#def buscar_retired (frase):
+#  out = ''
+#  j = frase.find('retired')
+#  l = frase.find(',', j)
+#  for i in range (j + 9, l):
+#    out = out +  frase[i]
+#  return out
   
 def buscar_coordenadas(frase, palabra, pos):
   out = ''
@@ -69,9 +71,9 @@ dic = {}
 warnings.simplefilter("ignore")
 for i in range(696, len(data)): # Empieza en 10 para eliminar las primeras que fueron de pruebas
   fila = []
-  fila.append(buscar_filename(data['subject_data'].iloc[i]))
+  fila.append('')#buscar_filename(data['subject_data'].iloc[i]))
   fila.append(data['subject_ids'].iloc[i])
-  fila.append(buscar_fecha(fila[0]))
+  fila.append('')#buscar_fecha(fila[0]))
   fila.append(int(data['created_at'].iloc[i][:4] + data['created_at'].iloc[i][5:7] + data['created_at'].iloc[i][8:10]))
   frase = data['annotations'].iloc[i]
   if re.search('Yes', frase):
@@ -93,11 +95,22 @@ for i in range(696, len(data)): # Empieza en 10 para eliminar las primeras que f
     fila.append('')
     fila.append('')
     fila.append('')
-  fila.append(buscar_retired(data['metadata'].iloc[i]))
+  fila.append('')#buscar_retired(data['metadata'].iloc[i]))
   for l in range(len(colum)):
     dic[colum[l]] = fila[l]
   csv = csv.append(dic, ignore_index = True)
 warnings.simplefilter("default")
+
+def buscar_coincidencias(aux):
+	z = 0
+	for i in aux:
+		if i == True:
+			z +=1
+			break
+	if z > 0:
+		return True
+	else:
+		return False
 
 def media_puntos(datos):
   x, y = [], []
@@ -115,12 +128,12 @@ def media_puntos(datos):
   else:
     return [sum(x)/len(x),sum(y)/len(y)]
     
-def contar_true(datos):
-  x = 0
-  for i in datos:
-    if i == 'true':
-      x += 1
-  return x > 3 or datos.iloc[-1] == 'true'
+#def contar_true(datos):
+#  x = 0
+#  for i in datos:
+#    if i == 'true':
+#      x += 1
+#  return x > 3 or datos.iloc[-1] == 'true'
     
 dataset = pd.DataFrame(columns = colum)
 dic = {}
@@ -128,9 +141,12 @@ warnings.simplefilter("ignore")
 for i in csv['Identificador'].unique():
   aux = pd.DataFrame(csv[csv.Identificador == i])
   fila = []
-  fila.append(aux['Fichero'].iloc[0])
+  if buscar_coincidencias(reg.id==i):
+  	fila.append(list(reg[reg.id == i]['nombre_fichero'])[0])
+  else:
+  	fila.append('')
   fila.append(i)
-  fila.append(aux['Fecha'].iloc[0])
+  fila.append(buscar_fecha(fila[0]))
   fila.append(aux['Fecha_Clasificacion'].iloc[-1])
   obj = aux['Objeto'].value_counts().index[0]
   fila.append(obj)
@@ -144,7 +160,7 @@ for i in csv['Identificador'].unique():
     fila.append('')
     fila.append('')
     fila.append('')
-  fila.append(contar_true(aux['Retirada']))
+  fila.append(csv[csv.Identificador==i]['Objeto'].value_counts()[0] > 10)
   for l in range(len(colum)):
     dic[colum[l]] = fila[l]
   dataset = dataset.append(dic, ignore_index = True)
